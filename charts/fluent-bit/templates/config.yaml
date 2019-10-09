@@ -33,7 +33,8 @@ data:
         Host  {{ .Values.backend.es.host }}
         Port  {{ .Values.backend.es.port }}
         Retry_Limit False
-        Index {{ .Values.backend.es.index }}
+        Logstash_Format On
+        Logstash_Prefix {{ .Values.backend.es.index }}
   parsers.conf: |-
     [PARSER]
         Name        docker
