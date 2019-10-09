@@ -1,0 +1,4 @@
+dependencies:
+  - name: fluent-bit
+    version: 0.5.1
+    condition: fluent-bit.enabled

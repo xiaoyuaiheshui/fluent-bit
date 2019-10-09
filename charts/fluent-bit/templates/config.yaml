@@ -1,0 +1,44 @@
+{{- if (empty .Values.existingConfigMap) -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fluent-bit.fullname" . }}-config
+  labels:
+    app: {{ template "fluent-bit.fullname" . }}
+data:
+  fluent-bit.conf: |-
+    [SERVICE]
+        Flush        1
+        Daemon       Off
+        Log_Level    info
+        Parsers_File parsers.conf
+    [INPUT]
+        Name             tail
+        Path             /var/log/containers/*.log
+        Parser           docker
+        Tag              {{ .Values.filter.kubeTag }}.*
+        Refresh_Interval 5
+        Mem_Buf_Limit    5MB
+        Skip_Long_Lines  On
+
+    [FILTER]
+        Name                kubernetes
+        Match               {{ .Values.filter.kubeTag }}.*
+        Kube_URL            {{ .Values.filter.kubeURL }}
+        Kube_CA_File        {{ .Values.filter.kubeCAFile }}
+        Kube_Token_File     {{ .Values.filter.kubeTokenFile }}
+    [OUTPUT]
+        Name  es
+        Match *
+        Host  {{ .Values.backend.es.host }}
+        Port  {{ .Values.backend.es.port }}
+        Retry_Limit False
+        Index {{ .Values.backend.es.index }}
+  parsers.conf: |-
+    [PARSER]
+        Name        docker
+        Format      json
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep   On
+  {{- end }}

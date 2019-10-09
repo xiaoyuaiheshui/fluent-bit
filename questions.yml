@@ -1,0 +1,30 @@
+categories:
+- elasticsearch
+- logging
+questions:
+- variable: defaultImage
+  default: "true"
+  description: "Use default Docker image"
+  label: Use Default Image
+  type: boolean
+  group: "Container Images"
+  show_subquestion_if: false
+  subquestions:
+  - variable: fluent-bit.image.fluent_bit.repository
+    default: "fluent/fluent-bit"
+    description: "Fluent-Bit image name"
+    type: string
+    label: Fluent-Bit Image Name
+  - variable: fluent-bit.image.fluent_bit.tag
+    default: "0.13.0"
+    description: "Fluent-Bit image tag"
+    type: string
+    label: Fluent-Bit Image Tag
+# fluent-bit settings:
+- variable: fluent-bit.enabled
+  default: true
+  group: "Fluent-Bit"
+  description: "Enable fluent-bit, the Kubernetes log forwarder"
+  type: boolean
+  label: Enable Fluent-Bit
+  required: true
